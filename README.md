@@ -30,8 +30,8 @@ A professional Attendance Management System UI built with React, Tailwind CSS, a
 
 | Role     | Email                  | Password |
 |----------|------------------------|----------|
-| **Admin**    | `admin@futuredesk.com` | `123`    |
-| **Employee** | `john@futuredesk.com`  | `123`    |
+| **Admin**    | `admin@futuredesk.com` |     |
+| **Employee** | `john@futuredesk.com`  |     |
 
 ## Project Structure
 - `src/components`: Reusable UI components (Sidebar, Navbar, Cards)
