@@ -4,7 +4,7 @@ import axios from 'axios';
 // IMPORTANT: Ensure VITE_API_URL does NOT have a trailing slash in .env
 // Example .env: VITE_API_URL=http://localhost:5000/api
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+    baseURL: import.meta.env.VITE_API_URL || 'https://futuredesks-backend.onrender.com/api',
 });
 
 api.interceptors.request.use((config) => {
