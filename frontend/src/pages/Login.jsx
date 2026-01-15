@@ -5,8 +5,8 @@ import { Lock, Mail } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 const Login = () => {
-  const [email, setEmail] = useState('admin@futuredesk.com');
-  const [password, setPassword] = useState('123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
