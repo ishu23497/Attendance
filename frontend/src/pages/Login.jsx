@@ -77,13 +77,7 @@ const Login = () => {
               Sign In
             </button>
             
-            <div className="text-center mt-4">
-              <p className="text-xs text-slate-500">
-                Demo Credentials:<br/>
-                Admin: admin@futuredesk.com / 123<br/>
-                Employee: john@futuredesk.com / 123
-              </p>
-            </div>
+            
           </form>
         </div>
       </div>

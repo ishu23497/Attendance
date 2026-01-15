@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('./models/User');
 const connectDB = require('./config/db');
@@ -6,43 +5,52 @@ const connectDB = require('./config/db');
 dotenv.config();
 
 const seedAdmin = async () => {
-    try {
-        await connectDB();
+  try {
+    await connectDB();
 
-        const adminEmail = 'admin@futuredesk.com';
-        const adminPassword = '123';
+    const admin = {
+      email: 'admin@futuredesk.com',
+      password: 'Admin@123',
+      role: 'admin',
+    };
 
-        // Check if admin exists
-        const userExists = await User.findOne({ email: adminEmail });
+    let user = await User.findOne({ email: admin.email });
 
-        if (userExists) {
-            console.log('Admin user found. Updating password...');
-            userExists.password = adminPassword; // Pre-save middleware will hash this
-            await userExists.save();
-            console.log('Admin password updated to: 123');
-        } else {
-            console.log('Admin user not found. Creating new admin...');
-            await User.create({
-                name: 'Admin User',
-                email: adminEmail,
-                password: adminPassword, // Pre-save middleware will hash this
-                role: 'admin',
-                department: 'Management',
-                designation: 'System Admin',
-                joiningDate: new Date().toISOString().split('T')[0],
-                isActive: true,
-                mustChangePassword: false
-            });
-            console.log('Admin user created successfully.');
-            console.log('Email: admin@futuredesk.com');
-            console.log('Password: 123');
-        }
+    if (user) {
+      console.log('✅ Admin found. Updating password...');
 
-        process.exit();
-    } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+      user.password = admin.password; // 🔐 bcrypt pre-save middleware will hash
+      user.role = 'admin';
+      user.isActive = true;
+
+      await user.save();
+    } else {
+      console.log('⚠️ Admin not found. Creating admin...');
+
+      await User.create({
+        name: 'System Admin',
+        email: admin.email,
+        password: admin.password, // 🔐 hashed automatically
+        role: 'admin',
+        department: 'Management',
+        designation: 'Administrator',
+        joiningDate: new Date(),
+        isActive: true,
+        mustChangePassword: false,
+      });
     }
+
+    console.log('--------------------------------');
+    console.log('🔐 ADMIN LOGIN DETAILS');
+    console.log('Email    : admin@futuredesk.com');
+    console.log('Password : Admin@123');
+    console.log('--------------------------------');
+
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Seeder error:', error.message);
+    process.exit(1);
+  }
 };
 
 seedAdmin();
