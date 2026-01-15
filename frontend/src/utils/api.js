@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 // Safe check: Log error if VITE_API_URL is missing
 if (!API_URL) {
-    console.error("FATAL ERROR: VITE_API_URL is not defined. Checks your .env file.");
+    console.error("FATAL ERROR: VITE_API_URL is not defined. Check your .env file.");
 }
 
 const api = axios.create({
