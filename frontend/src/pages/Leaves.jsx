@@ -10,7 +10,7 @@ const Leaves = () => {
     const [leaves, setLeaves] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
+
     // Modal & Form State
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
@@ -70,12 +70,12 @@ const Leaves = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 relative">
-            <Sidebar role={user?.role} />
-            
-            <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-0' : 'md:ml-64'}`}>
-                <Navbar 
-                    user={user} 
-                    toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+            <Sidebar role={user?.role} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+            <div className="md:ml-64 transition-all duration-300">
+                <Navbar
+                    user={user}
+                    toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     toggleMobileSidebar={() => setIsSidebarOpen(true)}
                 />
 
@@ -90,7 +90,7 @@ const Leaves = () => {
                             </p>
                         </div>
                         {!isAdmin && (
-                            <button 
+                            <button
                                 onClick={() => setShowModal(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2 font-medium transition-all"
                             >
@@ -136,8 +136,8 @@ const Leaves = () => {
                                                 </td>
                                                 <td className="p-4">
                                                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                        ${leave.status === 'Approved' ? 'bg-green-100 text-green-800' : 
-                                                          leave.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                        ${leave.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                                                            leave.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                                         {leave.status === 'Approved' && <CheckCircle size={12} />}
                                                         {leave.status === 'Rejected' && <XCircle size={12} />}
                                                         {leave.status === 'Pending' && <Clock size={12} />}
@@ -148,14 +148,14 @@ const Leaves = () => {
                                                     <td className="p-4 text-right">
                                                         {leave.status === 'Pending' && (
                                                             <div className="flex justify-end gap-2">
-                                                                <button 
+                                                                <button
                                                                     onClick={() => handleAction(leave._id, 'Approved')}
                                                                     disabled={actionLoading === leave._id}
                                                                     className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors disabled:opacity-50" title="Approve"
                                                                 >
                                                                     <CheckCircle size={18} />
                                                                 </button>
-                                                                <button 
+                                                                <button
                                                                     onClick={() => handleAction(leave._id, 'Rejected')}
                                                                     disabled={actionLoading === leave._id}
                                                                     className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50" title="Reject"
@@ -186,9 +186,9 @@ const Leaves = () => {
                         <form onSubmit={handleApply} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Leave Type</label>
-                                <select 
+                                <select
                                     value={formData.type}
-                                    onChange={e => setFormData({...formData, type: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, type: e.target.value })}
                                     className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     <option value="Sick">Sick Leave</option>
@@ -200,46 +200,46 @@ const Leaves = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">Start Date</label>
-                                    <input 
-                                        type="date" 
+                                    <input
+                                        type="date"
                                         required
                                         value={formData.startDate}
-                                        onChange={e => setFormData({...formData, startDate: e.target.value})}
+                                        onChange={e => setFormData({ ...formData, startDate: e.target.value })}
                                         className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">End Date</label>
-                                    <input 
-                                        type="date" 
+                                    <input
+                                        type="date"
                                         required
                                         value={formData.endDate}
-                                        onChange={e => setFormData({...formData, endDate: e.target.value})}
+                                        onChange={e => setFormData({ ...formData, endDate: e.target.value })}
                                         className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Reason</label>
-                                <textarea 
+                                <textarea
                                     required
                                     rows="3"
                                     value={formData.reason}
-                                    onChange={e => setFormData({...formData, reason: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, reason: e.target.value })}
                                     placeholder="Brief reason for leave..."
                                     className="w-full p-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                                 ></textarea>
                             </div>
                             <div className="flex justify-end gap-3 pt-2">
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     onClick={() => setShowModal(false)}
                                     className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg"
                                 >
                                     Cancel
                                 </button>
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     disabled={submitLoading}
                                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                                 >

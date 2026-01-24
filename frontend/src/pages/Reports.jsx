@@ -14,7 +14,7 @@ const Reports = () => {
     const [loading, setLoading] = useState(false);
     const [reportData, setReportData] = useState([]);
     const [totalStats, setTotalStats] = useState({ present: 0, late: 0, halfDay: 0, workingDays: 0 });
-    
+
     // Filters
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth() + 1); // 1-12
@@ -43,7 +43,7 @@ const Reports = () => {
         try {
             const query = `?year=${year}&month=${month}${employeeId ? `&employeeId=${employeeId}` : ''}`;
             const { data } = await api.get(`/admin/reports/monthly${query}`);
-            
+
             setReportData(data);
 
             // Calc Totals
@@ -76,12 +76,12 @@ const Reports = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 relative">
-            <Sidebar role="admin" />
-            
-            <div className={`transition-all duration-300 ${isSidebarOpen ? 'ml-0' : 'md:ml-64'}`}>
-                <Navbar 
-                    user={{ name: 'Admin', role: 'admin' }} 
-                    toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+            <Sidebar role="admin" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+            <div className="md:ml-64 transition-all duration-300">
+                <Navbar
+                    user={{ name: 'Admin', role: 'admin' }}
+                    toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     toggleMobileSidebar={() => setIsSidebarOpen(true)}
                 />
 
@@ -92,10 +92,10 @@ const Reports = () => {
                             <h1 className="text-2xl font-bold text-slate-800">Attendance Reports</h1>
                             <p className="text-slate-500 text-sm">Monthly insights & employee performance analytics.</p>
                         </div>
-                        
+
                         {/* Filters */}
                         <div className="flex bg-white p-2 rounded-lg shadow-sm border border-slate-200 gap-2">
-                             <select 
+                            <select
                                 value={month}
                                 onChange={(e) => setMonth(e.target.value)}
                                 className="bg-slate-50 border-none outline-none text-sm font-medium text-slate-700 p-2 rounded hover:bg-slate-100"
@@ -106,7 +106,7 @@ const Reports = () => {
                                     </option>
                                 ))}
                             </select>
-                            <select 
+                            <select
                                 value={year}
                                 onChange={(e) => setYear(e.target.value)}
                                 className="bg-slate-50 border-none outline-none text-sm font-medium text-slate-700 p-2 rounded hover:bg-slate-100"
@@ -115,7 +115,7 @@ const Reports = () => {
                                 <option value="2025">2025</option>
                                 <option value="2026">2026</option>
                             </select>
-                            <select 
+                            <select
                                 value={employeeId}
                                 onChange={(e) => setEmployeeId(e.target.value)}
                                 className="bg-slate-50 border-none outline-none text-sm font-medium text-slate-700 p-2 rounded hover:bg-slate-100 max-w-[150px]"
@@ -182,8 +182,8 @@ const Reports = () => {
                                                         <td className="p-4">
                                                             <div className="flex items-center gap-2">
                                                                 <div className="w-full bg-slate-200 rounded-full h-1.5 w-16">
-                                                                    <div 
-                                                                        className={`h-1.5 rounded-full ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+                                                                    <div
+                                                                        className={`h-1.5 rounded-full ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
                                                                         style={{ width: `${percentage}%` }}
                                                                     ></div>
                                                                 </div>

@@ -7,6 +7,7 @@ import { UserPlus, Save, ArrowLeft, Building2, Briefcase, Calendar } from 'lucid
 
 const AddEmployee = () => {
     const navigate = useNavigate();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -48,15 +49,15 @@ const AddEmployee = () => {
     return (
         <div className="min-h-screen bg-slate-50 flex">
             {/* Sidebar Mock/Reusable */}
-            <Sidebar role="admin" />
+            <Sidebar role="admin" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
             <div className="flex-1 md:ml-64 transition-all">
-                <Navbar user={{ name: 'Admin', role: 'admin' }} toggleSidebar={() => {}} toggleMobileSidebar={() => {}} />
+                <Navbar user={{ name: 'Admin', role: 'admin' }} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} toggleMobileSidebar={() => setIsSidebarOpen(true)} />
 
                 <main className="p-6 md:p-8 mt-20">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-8">
-                        <button 
+                        <button
                             onClick={() => navigate('/admin/employees')}
                             className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
                         >
@@ -104,7 +105,7 @@ const AddEmployee = () => {
                                     {/* Name */}
                                     <div className="col-span-2 md:col-span-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-                                        <input 
+                                        <input
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
@@ -117,7 +118,7 @@ const AddEmployee = () => {
                                     {/* Email */}
                                     <div className="col-span-2 md:col-span-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                                        <input 
+                                        <input
                                             name="email"
                                             type="email"
                                             value={formData.email}
@@ -133,7 +134,7 @@ const AddEmployee = () => {
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Department</label>
                                         <div className="relative">
                                             <Building2 className="absolute left-3 top-3 text-slate-400" size={18} />
-                                            <select 
+                                            <select
                                                 name="department"
                                                 value={formData.department}
                                                 onChange={handleChange}
@@ -155,7 +156,7 @@ const AddEmployee = () => {
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Designation</label>
                                         <div className="relative">
                                             <Briefcase className="absolute left-3 top-3 text-slate-400" size={18} />
-                                            <input 
+                                            <input
                                                 name="designation"
                                                 value={formData.designation}
                                                 onChange={handleChange}
@@ -171,7 +172,7 @@ const AddEmployee = () => {
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Joining Date</label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 top-3 text-slate-400" size={18} />
-                                            <input 
+                                            <input
                                                 name="joiningDate"
                                                 type="date"
                                                 value={formData.joiningDate}
@@ -183,16 +184,16 @@ const AddEmployee = () => {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end gap-4">
-                                <button 
+                                <button
                                     type="button"
                                     onClick={() => navigate('/admin/employees')}
                                     className="px-6 py-2.5 text-slate-600 font-semibold hover:bg-slate-200 rounded-lg transition-colors"
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     type="submit"
                                     disabled={loading}
                                     className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md flex items-center gap-2 disabled:opacity-50"

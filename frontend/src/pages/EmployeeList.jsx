@@ -8,6 +8,7 @@ import { Plus, Search, User, MoreVertical } from 'lucide-react';
 const EmployeeList = () => {
     const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -26,7 +27,7 @@ const EmployeeList = () => {
         }
     };
 
-    const filteredEmployees = employees.filter(emp => 
+    const filteredEmployees = employees.filter(emp =>
         emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.department.toLowerCase().includes(searchTerm.toLowerCase())
@@ -34,10 +35,10 @@ const EmployeeList = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
-            <Sidebar role="admin" />
-            
+            <Sidebar role="admin" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
             <div className="flex-1 md:ml-64 transition-all">
-                <Navbar user={{ name: 'Admin', role: 'admin' }} toggleSidebar={() => {}} toggleMobileSidebar={() => {}} />
+                <Navbar user={{ name: 'Admin', role: 'admin' }} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} toggleMobileSidebar={() => setIsSidebarOpen(true)} />
 
                 <main className="p-6 md:p-8 mt-20">
                     {/* Header */}
@@ -46,7 +47,7 @@ const EmployeeList = () => {
                             <h1 className="text-2xl font-bold text-slate-800">Employees</h1>
                             <p className="text-slate-500 text-sm">Manage company staff and accounts.</p>
                         </div>
-                        <button 
+                        <button
                             onClick={() => navigate('/admin/add-employee')}
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-md transition-all font-semibold"
                         >
@@ -59,7 +60,7 @@ const EmployeeList = () => {
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
                         <div className="relative flex-1 max-w-md">
                             <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
-                            <input 
+                            <input
                                 type="text"
                                 placeholder="Search by name, email, or department..."
                                 value={searchTerm}
