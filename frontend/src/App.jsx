@@ -7,6 +7,7 @@ import EmployeeList from './pages/EmployeeList';
 import AddEmployee from './pages/AddEmployee';
 import Reports from './pages/Reports';
 import Leaves from './pages/Leaves';
+import CalendarPage from './pages/CalendarPage';
 import { logout as apiLogout, refreshToken } from './utils/api';
 
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
@@ -153,14 +154,23 @@ const App = () => {
                     } 
                 />
 
-                <Route 
-                    path="/admin/reports" 
-                    element={
-                        <ProtectedRoute allowedRole="admin">
-                            <Reports />
-                        </ProtectedRoute>
-                    } 
-                />
+        <Route 
+          path="/admin/reports" 
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <Reports />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/admin/calendar" 
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <CalendarPage />
+            </ProtectedRoute>
+          } 
+        />
                 
                 <Route 
                     path="/leaves" 

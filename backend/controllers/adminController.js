@@ -217,4 +217,76 @@ const getMonthlyReport = async (req, res) => {
     }
 };
 
-module.exports = { getDashboardStats, getTodayAttendance, exportAttendance, getMonthlyReport };
+// @desc    Get attendance calendar data
+// @route   GET /api/admin/attendance/calendar
+// @access  Private/Admin
+const getAttendanceCalendar = async (req, res) => {
+    try {
+        const { year, month } = req.query;
+
+        if (!year || !month) {
+            return res.status(400).json({ message: 'Year and Month are required' });
+        }
+
+        const paddedMonth = month.toString().padStart(2, '0');
+        const monthPrefix = `${year}-${paddedMonth}`;
+
+        const attendanceData = await Attendance.find({
+            date: { $regex: `^${monthPrefix}` }
+        })
+        .populate('user', 'name email department designation')
+        .sort({ date: 1 });
+
+        const employees = await User.find({ role: 'employee', isActive: true })
+            .select('name email department designation');
+
+        const calendarData = employees.map(emp => {
+            const empAttendance = attendanceData.filter(a => 
+                a.user && a.user._id.toString() === emp._id.toString()
+            );
+
+            const days = {};
+            empAttendance.forEach(record => {
+                const day = parseInt(record.date.split('-')[2], 10);
+                days[day] = {
+                    status: record.status,
+                    checkIn: record.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null,
+                    checkOut: record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null,
+                    workHours: record.workHours
+                };
+            });
+
+            const presentDays = empAttendance.filter(a => a.status === 'Present' || a.status === 'Late').length;
+            const totalHours = empAttendance.reduce((sum, a) => sum + (a.workHours || 0), 0);
+
+            return {
+                employeeId: emp._id,
+                name: emp.name,
+                email: emp.email,
+                department: emp.department,
+                days,
+                stats: {
+                    present: presentDays,
+                    totalHours: totalHours.toFixed(1)
+                }
+            };
+        });
+
+        res.json({
+            year: parseInt(year),
+            month: parseInt(month),
+            employees: calendarData
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to fetch calendar data' });
+    }
+};
+
+module.exports = { 
+    getDashboardStats, 
+    getTodayAttendance, 
+    exportAttendance, 
+    getMonthlyReport,
+    getAttendanceCalendar
+};

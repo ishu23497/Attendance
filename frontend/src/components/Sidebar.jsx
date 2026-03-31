@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, LogOut, CheckSquare, FileText, Calendar, X } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, CheckSquare, FileText, Calendar, X, CalendarDays } from 'lucide-react';
 
 import logo from '../assets/logo.png';
 import { logout } from '../utils/api';
@@ -70,6 +70,14 @@ const Sidebar = ({ role, isOpen, onClose }) => {
               >
                 <FileText size={20} />
                 Reports
+              </NavLink>
+              <NavLink
+                to="/admin/calendar"
+                onClick={onClose}
+                className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-600 font-medium shadow-sm' : 'text-slate-600 hover:bg-slate-50'}`}
+              >
+                <CalendarDays size={20} />
+                Calendar
               </NavLink>
               <NavLink
                 to="/leaves"
