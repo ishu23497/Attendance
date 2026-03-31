@@ -1,4 +1,4 @@
-.# FutureDesk Attendance System
+# FutureDesk Attendance System
 
 A professional Attendance Management System UI built with React, Tailwind CSS, and Vite.
 
