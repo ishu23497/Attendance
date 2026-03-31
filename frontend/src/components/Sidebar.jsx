@@ -2,15 +2,20 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, LogOut, CheckSquare, FileText, Calendar, X } from 'lucide-react';
 
-
 import logo from '../assets/logo.png';
+import { logout } from '../utils/api';
 
 const Sidebar = ({ role, isOpen, onClose }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('userInfo');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      navigate('/');
+    }
   };
 
   return (

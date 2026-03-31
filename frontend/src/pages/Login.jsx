@@ -12,14 +12,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     try {
-      // Connect to real backend
        const { data } = await api.post('/auth/login', { email, password });
        localStorage.setItem('userInfo', JSON.stringify(data));
+       localStorage.setItem('lastActivity', Date.now().toString());
        if (data.role === 'admin') navigate('/admin');
        else navigate('/employee');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      const message = err.response?.data?.message || 'Login failed. Please try again.';
+      setError(message);
     }
   };
 

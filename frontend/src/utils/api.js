@@ -1,10 +1,7 @@
 import axios from 'axios';
 
-// Access the API URL from Vite environment variables
-// Ensure VITE_API_URL is set in your .env file
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Safe check: Log error if VITE_API_URL is missing
 if (!API_URL) {
     console.error("FATAL ERROR: VITE_API_URL is not defined. Check your .env file.");
 }
@@ -14,17 +11,138 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
 });
 
-// Request interceptor to add the auth token if available
-api.interceptors.request.use((config) => {
-    const user = JSON.parse(localStorage.getItem('userInfo'));
-    if (user && user.token) {
-        config.headers.Authorization = `Bearer ${user.token}`;
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
+const getUserFromStorage = () => {
+    try {
+        const userStr = localStorage.getItem('userInfo');
+        return userStr ? JSON.parse(userStr) : null;
+    } catch {
+        return null;
     }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+};
+
+const setUserToStorage = (user) => {
+    localStorage.setItem('userInfo', JSON.stringify(user));
+};
+
+const clearUserFromStorage = () => {
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('lastActivity');
+};
+
+api.interceptors.request.use(
+    (config) => {
+        const user = getUserFromStorage();
+        if (user?.token) {
+            config.headers.Authorization = `Bearer ${user.token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        const user = getUserFromStorage();
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            if (error.response?.data?.code === 'TOKEN_EXPIRED') {
+                if (isRefreshing) {
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
+                    })
+                        .then((token) => {
+                            originalRequest.headers.Authorization = `Bearer ${token}`;
+                            return api(originalRequest);
+                        })
+                        .catch((err) => Promise.reject(err));
+                }
+
+                originalRequest._retry = true;
+                isRefreshing = true;
+
+                try {
+                    const { data } = await api.post('/auth/refresh');
+
+                    const updatedUser = {
+                        ...user,
+                        token: data.token,
+                        expiresIn: data.expiresIn
+                    };
+                    setUserToStorage(updatedUser);
+
+                    processQueue(null, data.token);
+                    originalRequest.headers.Authorization = `Bearer ${data.token}`;
+
+                    return api(originalRequest);
+                } catch (refreshError) {
+                    processQueue(refreshError, null);
+                    clearUserFromStorage();
+                    window.location.href = '/';
+                    return Promise.reject(refreshError);
+                } finally {
+                    isRefreshing = false;
+                }
+            }
+
+            clearUserFromStorage();
+            window.location.href = '/';
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+export const refreshToken = async () => {
+    try {
+        const { data } = await api.post('/auth/refresh');
+        const user = getUserFromStorage();
+        if (user) {
+            setUserToStorage({ ...user, token: data.token });
+        }
+        return data;
+    } catch (error) {
+        clearUserFromStorage();
+        window.location.href = '/';
+        throw error;
+    }
+};
+
+export const logout = async () => {
+    try {
+        await api.post('/auth/logout');
+    } catch (error) {
+        console.error('Logout API error:', error);
+    } finally {
+        clearUserFromStorage();
+    }
+};
+
+export const getMe = async () => {
+    try {
+        const { data } = await api.get('/auth/me');
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export default api;
