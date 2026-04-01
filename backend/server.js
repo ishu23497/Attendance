@@ -20,6 +20,9 @@ connectDB();
 
 const app = express();
 
+// Required for Render/cloud deployments — allows rate-limit to see real client IPs
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
