@@ -37,9 +37,10 @@ const authUser = async (req, res) => {
     }
 
     const { email, password } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: normalizedEmail });
 
         if (!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -101,9 +102,10 @@ const registerUser = async (req, res) => {
     }
 
     const { name, email, password, role } = req.body;
+    const normalizedEmail = email.toLowerCase().trim();
 
     try {
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ email: normalizedEmail });
 
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
@@ -113,7 +115,7 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Password must be at least 8 characters' });
         }
 
-        const user = await User.create({ name, email, password, role });
+        const user = await User.create({ name, email: normalizedEmail, password, role });
 
         if (user) {
             const accessToken = generateAccessToken(user._id);
