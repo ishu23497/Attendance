@@ -46,8 +46,8 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 };
 
 const App = () => {
-    inactivityTimerRef = useRef(null);
-    tokenRefreshRef = useRef(null);
+    const inactivityTimerRef = useRef(null);
+    const tokenRefreshRef = useRef(null);
 
     const handleLogout = useCallback(() => {
         if (inactivityTimerRef.current) {
@@ -80,7 +80,7 @@ const App = () => {
             } catch (error) {
                 console.error('Token refresh failed:', error);
             }
-        }, TOKEN_REFRESH_INTERVAL * 1000);
+        }, TOKEN_REFRESH_INTERVAL); // Already in ms — no * 1000
     }, []);
 
     useEffect(() => {
@@ -195,8 +195,5 @@ const App = () => {
         </BrowserRouter>
     );
 };
-
-let inactivityTimerRef;
-let tokenRefreshRef;
 
 export default App;

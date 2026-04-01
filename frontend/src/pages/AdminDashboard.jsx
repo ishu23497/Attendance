@@ -67,7 +67,8 @@ const AdminDashboard = () => {
     setExportLoading(true);
     try {
       const token = JSON.parse(localStorage.getItem('userInfo')).token;
-      const response = await fetch(`http://localhost:5000/api/admin/attendance/export?startDate=${exportConfig.startDate}&endDate=${exportConfig.endDate}&format=${exportConfig.format}`, {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${baseUrl}/admin/attendance/export?startDate=${exportConfig.startDate}&endDate=${exportConfig.endDate}&format=${exportConfig.format}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
