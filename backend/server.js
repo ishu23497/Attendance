@@ -24,9 +24,9 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
-    "https://attendance-eight-mu.vercel.app",
-    "https://attendance-portal-main.vercel.app",
-    process.env.FRONTEND_URL
+    "https://attendance-eight-mu.vercel.app",       // ✅ production frontend
+    "https://attendance-portal-main.onrender.com",  // ✅ backend (for health checks)
+    process.env.FRONTEND_URL                         // ✅ from .env (same as above)
 ].filter(Boolean);
 
 const corsOptions = {
@@ -74,14 +74,16 @@ const globalLimiter = rateLimit({
     message: { message: 'Too many requests, please try again later.' },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => req.method === 'OPTIONS', // never block preflight
 });
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
+    max: 20, // increased from 5 to avoid false lockouts during development
     message: { message: 'Too many login attempts, please try again after 15 minutes.' },
     standardHeaders: true,
     legacyHeaders: false,
+    skip: (req) => req.method === 'OPTIONS', // never block preflight
 });
 
 app.use('/api/', globalLimiter);
