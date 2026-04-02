@@ -27,9 +27,9 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
-    "https://attendance-eight-mu.vercel.app",       // ✅ production frontend
-    "https://attendance-portal-main.onrender.com",  // ✅ backend (for health checks)
-    process.env.FRONTEND_URL                         // ✅ from .env (same as above)
+    "https://attendance-eight-mu.vercel.app",   // ✅ production frontend
+    "https://attendance-rx98.onrender.com",     // ✅ backend (for health checks)
+    process.env.FRONTEND_URL                     // ✅ from .env
 ].filter(Boolean);
 
 const corsOptions = {
